@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JSON Action Renamer</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f9f9f9;
+        box-sizing: border-box;
+        height: calc(100vh - 100px);
+      }
+
+      h1,
+      p {
+        margin: 0;
+        padding: 0;
+      }
+
+      h1,
+      h3 {
+        text-align: center;
+        color: #fff;
+        background-color: #007bff; /* Blue background color */
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; /* Choose a suitable font */
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Add a subtle text shadow */
+      }
+
+      .container {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr); /* Two columns */
+        gap: 20px; /* Gap between grid items */
+        /* Set the height of the container to 100% of the viewport height minus 100px for the header */
+        padding-inline: 1rem;
+        margin-top: 1rem;
+      }
+
+      textarea {
+        width: 100%;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        resize: vertical;
+        background-color: #f5f5f5;
+      }
+
+      button {
+        padding: 10px;
+        margin-block: 10px;
+        height: auto;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      button:hover {
+        background-color: #0056b3;
+      }
+
+      button svg {
+        width: 16px;
+        height: 16px;
+        margin-right: 5px;
+      }
+
+      #inputContainer,
+      #outputContainer {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        height: fit-content;
+      }
+
+      #actionListHeader {
+        grid-column: span 2;
+      }
+
+      #actionListHeader h3 {
+        grid-column: span 2;
+        padding: 0;
+        margin: 0;
+      }
+
+      #actionList {
+        grid-column: span 2;
+        margin-top: 20px;
+        display: grid;
+        grid-template-columns: repeat(
+          auto-fit,
+          minmax(200px, 1fr)
+        ); /* Adjust the minimum and maximum width as needed */
+        gap: 20px;
+        overflow-y: auto;
+      }
+
+      .actionItem {
+        max-width: 100%;
+        padding: 10px;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+
+      .actionName {
+        word-break: break-all;
+      }
+
+      @media only screen and (max-width: 768px) {
+        .container {
+          display: block; /* One column on smaller screens */
+          height: auto;
+        }
+        #inputContainer,
+        #outputContainer {
+          margin-top: 10px;
+        }
+      }
+
+      /* Style for the success popup */
+      #successPopup {
+        visibility: hidden;
+        width: 100%;
+        background-color: rgb(198, 239, 206); /* PowerApps success color */
+        color: rgb(0, 97, 0);
+        text-align: center;
+        padding: 1rem;
+        position: fixed;
+        z-index: 1;
+        top: 0;
+        left: 0;
+        font-size: 1rem;
+        border-color: rgb(0, 97, 0);
+        opacity: 0;
+        transition: opacity 0.5s ease-in-out, visibility 0s 0.5s;
+      }
+
+      /* Show the popup */
+      #successPopup.show {
+        visibility: visible;
+        opacity: 1;
+        transition: opacity 0.5s ease-in-out;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>PowerAutomate JSON Action Renamer</h1>
+    <div class="container">
+      <div id="inputContainer">
+        <textarea
+          id="jsonInput"
+          rows="10"
+          cols="50"
+          placeholder="Paste your JSON here"
+        ></textarea>
+        <button onclick="listActions()">Load Actions</button>
+      </div>
+
+      <div id="outputContainer">
+        <textarea
+          id="output"
+          rows="10"
+          cols="50"
+          placeholder="Updated JSON will appear here"
+        ></textarea>
+        <button onclick="copyToClipboard()">
+          Copy JSON to Clipboard
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="clipboardIcon"
+            style="vertical-align: middle; height: 10px"
+          >
+            <rect x="9" y="9" width="10" height="10" rx="2" ry="2"></rect>
+            <path d="M5 15V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v10"></path>
+          </svg>
+        </button>
+        <button onclick="updateAll()">Update All</button>
+      </div>
+      <div id="actionListHeader">
+        <h3>Action List</h3>
+      </div>
+      <div id="actionList"></div>
+    </div>
+
+    <!-- Popup for success message -->
+    <div id="successPopup">JSON copied to clipboard!</div>
+
+    <script>
+      function listActions() {
+        const json = JSON.parse(document.getElementById("jsonInput").value);
+        const actionListDiv = document.getElementById("actionList");
+        actionListDiv.innerHTML = "";
+
+        function extractActionNames(actions, position = 1) {
+          for (const key in actions) {
+            if (actions.hasOwnProperty(key)) {
+              const action = actions[key];
+              const inputId = `newName-${key}`;
+              actionListDiv.innerHTML += `
+        <div class="actionItem">
+          <strong>Action ${position} inside the flow:</strong><p class="actionName">${key}</p> 
+          <div class="inputContainer">
+            <input type="text" id="${inputId}" placeholder="New Action Name">
+            <button class="button" onclick="renameSingle('${key}', '${inputId}')">Rename Single</button>
+          </div>
+        </div>`;
+              if (action.actions) {
+                extractActionNames(action.actions, position + 1); // Recursively extract action names for nested actions
+              }
+              position++;
+            }
+          }
+        }
+        if (json.operationDefinition && json.operationDefinition.actions) {
+          extractActionNames(json.operationDefinition.actions);
+        }
+      }
+
+      function renameSingle(oldName, inputId) {
+        const newName = document.getElementById(inputId).value;
+        if (newName.trim() !== "") {
+          const json = JSON.parse(document.getElementById("jsonInput").value);
+          const updatedJsonString = replaceActionNameInString(
+            JSON.stringify(json),
+            oldName,
+            newName
+          );
+          const outputTextarea = document.getElementById("output");
+          outputTextarea.value = updatedJsonString;
+        }
+      }
+
+      function updateAll() {
+        const json = JSON.parse(document.getElementById("jsonInput").value);
+        const updatedJson = updateAllActionNames(json);
+        const outputTextarea = document.getElementById("output");
+        outputTextarea.value = JSON.stringify(updatedJson, null, 2);
+      }
+
+      function updateAllActionNames(json) {
+        const actionListDiv = document.getElementById("actionList");
+        const inputFields =
+          actionListDiv.querySelectorAll('input[type="text"]');
+        let updatedJson = JSON.parse(JSON.stringify(json));
+
+        inputFields.forEach((inputField) => {
+          const oldName = inputField.id.split("-")[1];
+          const newName = inputField.value.trim();
+          if (newName !== "") {
+            updatedJson = JSON.parse(
+              replaceActionNameInString(
+                JSON.stringify(updatedJson),
+                oldName,
+                newName
+              )
+            );
+          }
+        });
+
+        return updatedJson;
+      }
+
+      function replaceActionNameInString(jsonString, oldName, newName) {
+        const regex = new RegExp(oldName, "g");
+        return jsonString.replace(regex, newName);
+      }
+
+      function copyToClipboard() {
+        const outputTextarea = document.getElementById("output");
+        outputTextarea.select();
+        document.execCommand("copy");
+        showSuccessPopup(); // Show the success popup
+      }
+
+      function showSuccessPopup() {
+        const popup = document.getElementById("successPopup");
+        popup.className = "show";
+        setTimeout(() => {
+          popup.className = popup.className.replace("show", "");
+        }, 3000); // Hide after 4 seconds
+      }
+    </script>
+  </body>
+</html>
