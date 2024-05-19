@@ -2,6 +2,10 @@
 
 This project is a web-based tool for renaming actions within a JSON definition used in PowerAutomate. It allows users to load JSON, rename actions individually or in bulk, and copy the updated JSON to the clipboard.
 
+## Demo
+
+![image](https://github.com/LucasHahne/PowerAutomateJSONFormatter/assets/63300977/dc52453f-4566-41b5-89f6-22e793694f2e)
+
 ## Features
 
 - **Load Actions:** Load JSON data to extract and display action names.
@@ -9,11 +13,11 @@ This project is a web-based tool for renaming actions within a JSON definition u
 - **Copy to Clipboard:** Copy the updated JSON to the clipboard with a single click.
 - **Success Notification:** Display a success popup notification when the JSON is copied to the clipboard.
 
-## Demo
-
-![image](https://github.com/LucasHahne/PowerAutomateJSONFormatter/assets/63300977/dc52453f-4566-41b5-89f6-22e793694f2e)
-
 ## Usage
+
+### Get your scope
+1. move zour code inside a scope inside zour PowerAutomate Flow.
+2. Copy the scope to your clipboard and paste it inside the input textarea
 
 ### Load Actions
 
