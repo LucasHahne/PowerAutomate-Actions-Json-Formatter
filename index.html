@@ -284,8 +284,9 @@
       }
 
       function replaceActionNameInString(jsonString, oldName, newName) {
+        const sanitizedNewName = newName.replace(/\s+/g, "_");
         const regex = new RegExp(oldName, "g");
-        return jsonString.replace(regex, newName);
+        return jsonString.replace(regex, sanitizedNewName);
       }
 
       function copyToClipboard() {
