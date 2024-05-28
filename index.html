@@ -24,16 +24,15 @@
       h3 {
         text-align: center;
         color: #fff;
-        background-color: #007bff; /* Blue background color */
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; /* Choose a suitable font */
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Add a subtle text shadow */
+        background-color: #007bff;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
       }
 
       .container {
         display: grid;
-        grid-template-columns: repeat(2, 1fr); /* Two columns */
-        gap: 20px; /* Gap between grid items */
-        /* Set the height of the container to 100% of the viewport height minus 100px for the header */
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
         padding-bottom: 1rem;
         padding-inline: 1rem;
         margin-top: 1rem;
@@ -69,6 +68,10 @@
         margin-right: 5px;
       }
 
+      .inputContainer {
+        margin-top: 0.75rem;
+      }
+
       #inputContainer,
       #outputContainer {
         background-color: #fff;
@@ -92,10 +95,7 @@
         grid-column: span 2;
         margin-top: 20px;
         display: grid;
-        grid-template-columns: repeat(
-          auto-fit,
-          minmax(200px, 1fr)
-        ); /* Adjust the minimum and maximum width as needed */
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
         gap: 20px;
         overflow-y: auto;
       }
@@ -114,7 +114,7 @@
 
       @media only screen and (max-width: 768px) {
         .container {
-          display: block; /* One column on smaller screens */
+          display: block;
           height: auto;
         }
         #inputContainer,
@@ -123,11 +123,10 @@
         }
       }
 
-      /* Style for the success popup */
       #successPopup {
         visibility: hidden;
         width: 100%;
-        background-color: rgb(198, 239, 206); /* PowerApps success color */
+        background-color: rgb(198, 239, 206);
         color: rgb(0, 97, 0);
         text-align: center;
         padding: 1rem;
@@ -141,7 +140,6 @@
         transition: opacity 0.5s ease-in-out, visibility 0s 0.5s;
       }
 
-      /* Show the popup */
       #successPopup.show {
         visibility: visible;
         opacity: 1;
@@ -205,7 +203,6 @@
     </div>
 
     <footer>Created by Lucas Hahne</footer>
-    <!-- Popup for success message -->
     <div id="successPopup">JSON copied to clipboard!</div>
 
     <script>
@@ -224,11 +221,13 @@
           <strong>Action ${position} inside the flow:</strong><p class="actionName">${key}</p> 
           <div class="inputContainer">
             <input type="text" id="${inputId}" placeholder="New Action Name">
-            <button class="button" onclick="renameSingle('${key}', '${inputId}')">Rename Single</button>
           </div>
         </div>`;
               if (action.actions) {
-                extractActionNames(action.actions, position + 1); // Recursively extract action names for nested actions
+                extractActionNames(action.actions, position + 1);
+              }
+              if (action.else && action.else.actions) {
+                extractActionNames(action.else.actions, position + 1);
               }
               position++;
             }
@@ -236,20 +235,6 @@
         }
         if (json.operationDefinition && json.operationDefinition.actions) {
           extractActionNames(json.operationDefinition.actions);
-        }
-      }
-
-      function renameSingle(oldName, inputId) {
-        const newName = document.getElementById(inputId).value;
-        if (newName.trim() !== "") {
-          const json = JSON.parse(document.getElementById("jsonInput").value);
-          const updatedJsonString = replaceActionNameInString(
-            JSON.stringify(json),
-            oldName,
-            newName
-          );
-          const outputTextarea = document.getElementById("output");
-          outputTextarea.value = updatedJsonString;
         }
       }
 
@@ -293,7 +278,7 @@
         const outputTextarea = document.getElementById("output");
         outputTextarea.select();
         document.execCommand("copy");
-        showSuccessPopup(); // Show the success popup
+        showSuccessPopup();
       }
 
       function showSuccessPopup() {
@@ -301,7 +286,7 @@
         popup.className = "show";
         setTimeout(() => {
           popup.className = popup.className.replace("show", "");
-        }, 3000); // Hide after 4 seconds
+        }, 3000);
       }
     </script>
   </body>
