@@ -1,7 +1,7 @@
 # PowerAutomate JSON Action Renamer
 
 This project is a web-based tool for renaming actions within a JSON definition used in PowerAutomate. It allows users to load JSON, rename actions individually or in bulk, and copy the updated JSON to the clipboard.
-The page is available at: [https://lucashahne.github.io/PA-Formatter-JSON/](https://lucashahne.github.io/PA-Formatter-JSON/)
+The page is available at: [https://lucashahne.github.io/PowerAutomate-Actions-Json-Formatter/](https://lucashahne.github.io/PowerAutomate-Actions-Json-Formatter/)
 
 ## Demo
 
