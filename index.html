@@ -79,6 +79,10 @@
         margin-top: 0.75rem;
       }
 
+      .noJsonFormat {
+        color: rgb(220, 0, 0);
+      }
+
       #inputContainer,
       #outputContainer {
         background-color: #fff;
@@ -165,7 +169,7 @@
     </style>
   </head>
   <body>
-    <h1>PowerAutomate JSON Action Renamer</h1>
+    <h1>PowerAutomate JSON Action Renamer by Lucas Hahne</h1>
     <div class="container">
       <div id="inputContainer">
         <textarea
@@ -174,7 +178,9 @@
           cols="50"
           placeholder="Paste your JSON here"
         ></textarea>
-        <button onclick="listActions()">Load Actions</button>
+        <button onclick="listActions()">Load actions</button>
+        <button onclick="clearInput()">Clear input</button>
+        <p id="jsonValidation">Json will be checked while loading actions</p>
       </div>
 
       <div id="outputContainer">
@@ -203,6 +209,7 @@
         </button>
         <button class="btnUpdateAll" onclick="updateAll()">Update All</button>
       </div>
+
       <div id="actionListHeader">
         <h3>Action List</h3>
       </div>
@@ -224,12 +231,27 @@
     </script>
     <script>
       //-----Start left panel
-
+      function clearInput() {
+        document.getElementById("jsonInput").value = "";
+      }
       //Left to Load all actions
       // Function to list and load all actions from the JSON input
       function listActions() {
         // Parse the JSON input from the textarea field with id="jsonInput"
-        const json = JSON.parse(document.getElementById("jsonInput").value);
+
+        const jsonValidationParagraph =
+          document.getElementById("jsonValidation");
+
+        try {
+          const json = JSON.parse(document.getElementById("jsonInput").value);
+        } catch (error) {
+          jsonValidationParagraph.value = "Please insert a valid JSON";
+          jsonValidationParagraph.classList.add("noJsonFormat");
+          return;
+        }
+
+        jsonValidationParagraph.value = "Valid JSON";
+        jsonValidationParagraph.classList.remove("noJsonFormat");
 
         // Get the div element where the action list will be displayed (id="actionList")
         const actionListDiv = document.getElementById("actionList");
@@ -256,7 +278,7 @@
             <strong>Action ${position} inside the flow:</strong>
             <p class="actionName">${key}</p>
             <div class="inputContainer">
-              <input type="text" id="${inputId}" placeholder="New Action Name">
+              <input type="text" id="${inputId}" placeholder="New Action Name" maxlength="50">
             </div>
           </div>`;
 
