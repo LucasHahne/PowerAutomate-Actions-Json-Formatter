@@ -17,7 +17,7 @@ The page is available at: [https://lucashahne.github.io/PowerAutomate-Actions-Js
 ## Usage
 
 ### Get your scope
-1. move zour code inside a scope inside zour PowerAutomate Flow.
+1. move your code inside a scope inside your PowerAutomate Flow.
 2. Copy the scope to your clipboard and paste it inside the input textarea
 
 ### Load Actions
@@ -26,10 +26,6 @@ The page is available at: [https://lucashahne.github.io/PowerAutomate-Actions-Js
 2. Click the "Load Actions" button to display a list of actions extracted from the JSON.
 
 ### Rename Actions
-
-- **Rename Single Action:**
-  1. Enter the new name in the text field next to the action you want to rename.
-  2. Click the "Rename Single" button to update the action name in the JSON.
 
 - **Update All Actions:**
   1. Enter the new names for all actions in their respective text fields.
