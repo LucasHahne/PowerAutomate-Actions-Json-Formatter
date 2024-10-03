@@ -1,5 +1,5 @@
 {
-  "id": "9333fa05-fdb6-49a5-9887-715aedb3c061",
+  "id": "26a8782b-62c3-4add-8bbc-56a27bd3991e",
   "brandColor": "#8C3900",
   "connectionReferences": {
     "shared_commondataserviceforapps": {
@@ -36,8 +36,43 @@
           }
         },
         "runAfter": { "Compose_22": ["Succeeded"] }
+      },
+      "Apply_to_each": {
+        "type": "Foreach",
+        "foreach": "@outputs('List_rows')?['body/value']",
+        "actions": {
+          "Append_to_string_variable": {
+            "type": "AppendToStringVariable",
+            "inputs": {
+              "name": "Test",
+              "value": "@items('Apply_to_each')?['firstname']"
+            },
+            "runAfter": {}
+          },
+          "Append_to_string_variable_3": {
+            "type": "AppendToStringVariable",
+            "inputs": { "name": "Test", "value": "@outputs('Compose_22')" },
+            "runAfter": { "Append_to_string_variable": ["Succeeded"] }
+          }
+        },
+        "runAfter": { "List_rows": ["Succeeded"] }
+      },
+      "Apply_to_each_2": {
+        "type": "Foreach",
+        "foreach": "@outputs('List_rows')?['body/value']",
+        "actions": {
+          "Append_to_string_variable_2": {
+            "type": "AppendToStringVariable",
+            "inputs": {
+              "name": "Test",
+              "value": "@items('Apply_to_each_2')?['firstname']"
+            },
+            "runAfter": {}
+          }
+        },
+        "runAfter": { "Apply_to_each": ["Succeeded"] }
       }
     },
-    "runAfter": {}
+    "runAfter": { "Initialize_variable": ["Succeeded"] }
   }
 }

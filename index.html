@@ -288,11 +288,13 @@
       // Function to update all action names in the JSON based on user input
       function updateAll() {
         // Parse the JSON from the textarea input with id="jsonInput" (where the user pasted the original JSON)
-        const json = JSON.parse(document.getElementById("jsonInput").value);
+        const inputJson = JSON.parse(
+          document.getElementById("jsonInput").value
+        );
 
         // Call the `updateAllActionNames()` function, passing the parsed JSON
         // This function is expected to handle renaming the actions based on user inputs (not defined in this code snippet, but implied)
-        const updatedJson = updateAllActionNames(json);
+        const updatedJson = updateAllActionNames(inputJson);
 
         // Get the textarea element with id="output" where the updated JSON will be displayed
         const outputTextarea = document.getElementById("output");
@@ -302,11 +304,11 @@
         outputTextarea.value = JSON.stringify(updatedJson, null, 2);
       }
 
-      function updateAllActionNames(json) {
+      function updateAllActionNames(inputJson) {
         const actionListDiv = document.getElementById("actionList");
         const inputFields =
           actionListDiv.querySelectorAll('input[type="text"]');
-        let updatedJson = json; //JSON.parse(JSON.stringify(json));
+        let updatedJson = inputJson; //JSON.parse(JSON.stringify(inputJson));
 
         inputFields.forEach((inputField) => {
           const oldName = inputField.id.split("-")[1];
@@ -344,6 +346,38 @@
           sanitizedNewNameForAction
         );
         const renamedExpression = jsonString.replace(
+          regexNewNameForExpressions,
+          sanitizedNewNameForExpression
+        );
+
+        return renamedExpression;
+      }
+
+      function replaceActionNameInString(jsonString, oldName, newName) {
+        // Sanitize the new name by replacing blanks with "_" so that Power Automate can read it
+        const sanitizedNewNameForAction =
+          '"' + newName.replace(/\s+/g, "_") + '":';
+        const regexNewNameForActions = new RegExp(
+          '"' + oldName + '"\\s*:',
+          "g"
+        );
+
+        // Sanitize the new name for expressions inside parentheses ('...') format
+        const sanitizedNewNameForExpression =
+          "('" + newName.replace(/\s+/g, "_") + "')";
+        const regexNewNameForExpressions = new RegExp(
+          "\\('" + oldName + "'\\)",
+          "g"
+        );
+
+        // First, replace action names (e.g., "List_rows": {...} becomes "TEST": {...})
+        const renamedAction = jsonString.replace(
+          regexNewNameForActions,
+          sanitizedNewNameForAction
+        );
+
+        // Next, replace expression references (e.g., @outputs('List_rows') becomes @outputs('TEST'))
+        const renamedExpression = renamedAction.replace(
           regexNewNameForExpressions,
           sanitizedNewNameForExpression
         );
