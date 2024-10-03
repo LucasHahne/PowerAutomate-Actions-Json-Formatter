@@ -68,6 +68,13 @@
         margin-right: 5px;
       }
 
+      .btnUpdateAll {
+        background-color: #00970d;
+      }
+      .btnUpdateAll:hover {
+        background-color: #00970da3;
+      }
+
       .inputContainer {
         margin-top: 0.75rem;
       }
@@ -194,7 +201,7 @@
             <path d="M5 15V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v10"></path>
           </svg>
         </button>
-        <button onclick="updateAll()">Update All</button>
+        <button class="btnUpdateAll" onclick="updateAll()">Update All</button>
       </div>
       <div id="actionListHeader">
         <h3>Action List</h3>
@@ -328,7 +335,7 @@
         const sanitizedNewNameForExpression =
           "('" + newName.replace(/\s+/g, "_") + "')";
         const regexNewNameForExpressions = new RegExp(
-          "('" + +oldName + +"')",
+          "('" + oldName + "')",
           "g"
         );
 
@@ -359,7 +366,7 @@
         popup.className = "show";
         setTimeout(() => {
           popup.className = popup.className.replace("show", "");
-        }, 3000);
+        }, 2000);
       }
     </script>
   </body>
