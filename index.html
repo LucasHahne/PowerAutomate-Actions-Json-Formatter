@@ -247,7 +247,7 @@
               actionListDiv.innerHTML += `
           <div class="actionItem">
             <strong>Action ${position} inside the flow:</strong>
-            <p class="actionName">${key}</p> 
+            <p class="actionName">${key}</p>
             <div class="inputContainer">
               <input type="text" id="${inputId}" placeholder="New Action Name">
             </div>
@@ -320,7 +320,7 @@
 
       function replaceActionNameInString(jsonString, oldName, newName) {
         //Replacing blanks with "_" in the new name otherwise PA cannot read the actions
-        const sanitizedNewName = newName.replace(/\s+/g, "_");
+        const sanitizedNewName = '"' + newName.replace(/\s+/g, "_") + '":';
         const regex = new RegExp('"' + oldName + '":', "g");
         return jsonString.replace(regex, sanitizedNewName);
       }
