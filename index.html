@@ -245,12 +245,12 @@
         try {
           const json = JSON.parse(document.getElementById("jsonInput").value);
         } catch (error) {
-          jsonValidationParagraph.value = "Please insert a valid JSON";
+          jsonValidationParagraph.innerText = "Please insert a valid JSON";
           jsonValidationParagraph.classList.add("noJsonFormat");
           return;
         }
 
-        jsonValidationParagraph.value = "Valid JSON";
+        jsonValidationParagraph.innerText = "Valid JSON";
         jsonValidationParagraph.classList.remove("noJsonFormat");
 
         // Get the div element where the action list will be displayed (id="actionList")
