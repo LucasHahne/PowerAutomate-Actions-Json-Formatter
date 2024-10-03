@@ -214,44 +214,84 @@
         "description": "Easily rename multiple actions or an entire PowerAutomate Flow. You need a copied JSON-Scope and will get direct access to all actions and the ability to rename them as well as all coming usages of that action",
         "url": "https://lucashahne.github.io/PowerAutomate-Actions-Json-Formatter/"
       }
-    </script>    
+    </script>
     <script>
+      //-----Start left panel
+
+      //Left to Load all actions
+      // Function to list and load all actions from the JSON input
       function listActions() {
+        // Parse the JSON input from the textarea field with id="jsonInput"
         const json = JSON.parse(document.getElementById("jsonInput").value);
+
+        // Get the div element where the action list will be displayed (id="actionList")
         const actionListDiv = document.getElementById("actionList");
+
+        // Clear out any previous action list content to reset the view
         actionListDiv.innerHTML = "";
 
+        // Function to extract and display action names from the JSON recursively
+        // 'actions' is the part of the JSON containing action definitions, and 'position' helps track the order
         function extractActionNames(actions, position = 1) {
+          // Loop through each action in the JSON
           for (const key in actions) {
+            // Check if the object has this property (good practice to ensure we're not iterating over inherited properties)
             if (actions.hasOwnProperty(key)) {
+              // Get the current action details
               const action = actions[key];
+
+              // Create a unique id for the input field that will hold the new name for each action
               const inputId = `newName-${key}`;
+
+              // Add an HTML block for each action that displays its current name and a text input for renaming it
               actionListDiv.innerHTML += `
-        <div class="actionItem">
-          <strong>Action ${position} inside the flow:</strong><p class="actionName">${key}</p> 
-          <div class="inputContainer">
-            <input type="text" id="${inputId}" placeholder="New Action Name">
-          </div>
-        </div>`;
+          <div class="actionItem">
+            <strong>Action ${position} inside the flow:</strong>
+            <p class="actionName">${key}</p> 
+            <div class="inputContainer">
+              <input type="text" id="${inputId}" placeholder="New Action Name">
+            </div>
+          </div>`;
+
+              // If the current action has nested actions, call the function recursively to handle them
               if (action.actions) {
                 extractActionNames(action.actions, position + 1);
               }
+
+              // If there's an "else" condition in the action flow (common in logic flows), extract those actions as well
               if (action.else && action.else.actions) {
                 extractActionNames(action.else.actions, position + 1);
               }
+
+              // Increment the position for the next action
               position++;
             }
           }
         }
+
+        // If the JSON contains an "operationDefinition" with "actions", start extracting action names
         if (json.operationDefinition && json.operationDefinition.actions) {
           extractActionNames(json.operationDefinition.actions);
         }
       }
 
+      //-----End left panel
+
+      //-----Start right panel
+      // Function to update all action names in the JSON based on user input
       function updateAll() {
+        // Parse the JSON from the textarea input with id="jsonInput" (where the user pasted the original JSON)
         const json = JSON.parse(document.getElementById("jsonInput").value);
+
+        // Call the `updateAllActionNames()` function, passing the parsed JSON
+        // This function is expected to handle renaming the actions based on user inputs (not defined in this code snippet, but implied)
         const updatedJson = updateAllActionNames(json);
+
+        // Get the textarea element with id="output" where the updated JSON will be displayed
         const outputTextarea = document.getElementById("output");
+
+        // Convert the updated JSON object back to a string with proper formatting (indentation of 2 spaces)
+        // Then, set the value of the output textarea to this string
         outputTextarea.value = JSON.stringify(updatedJson, null, 2);
       }
 
@@ -259,7 +299,7 @@
         const actionListDiv = document.getElementById("actionList");
         const inputFields =
           actionListDiv.querySelectorAll('input[type="text"]');
-        let updatedJson = JSON.parse(JSON.stringify(json));
+        let updatedJson = json; //JSON.parse(JSON.stringify(json));
 
         inputFields.forEach((inputField) => {
           const oldName = inputField.id.split("-")[1];
@@ -279,8 +319,9 @@
       }
 
       function replaceActionNameInString(jsonString, oldName, newName) {
+        //Replacing blanks with "_" in the new name otherwise PA cannot read the actions
         const sanitizedNewName = newName.replace(/\s+/g, "_");
-        const regex = new RegExp(oldName, "g");
+        const regex = new RegExp('" ' + oldName + '":', "g");
         return jsonString.replace(regex, sanitizedNewName);
       }
 
@@ -291,6 +332,9 @@
         showSuccessPopup();
       }
 
+      //-----End right panel
+
+      //Utils
       function showSuccessPopup() {
         const popup = document.getElementById("successPopup");
         popup.className = "show";
