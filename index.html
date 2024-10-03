@@ -321,7 +321,7 @@
       function replaceActionNameInString(jsonString, oldName, newName) {
         //Replacing blanks with "_" in the new name otherwise PA cannot read the actions
         const sanitizedNewName = newName.replace(/\s+/g, "_");
-        const regex = new RegExp('" ' + oldName + '":', "g");
+        const regex = new RegExp('"' + oldName + '":', "g");
         return jsonString.replace(regex, sanitizedNewName);
       }
 
