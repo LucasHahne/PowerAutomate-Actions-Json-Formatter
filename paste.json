@@ -1,0 +1,27 @@
+{
+  "id": "47b261df-c564-4bb0-8613-6ff9843d5dad",
+  "brandColor": "#8C3900",
+  "connectionReferences": {},
+  "connectorDisplayName": "Control",
+  "icon": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZlcnNpb249IjEuMSIgdmlld0JveD0iMCAwIDMyIDMyIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPg0KIDxwYXRoIGQ9Im0wIDBoMzJ2MzJoLTMyeiIgZmlsbD0iIzhDMzkwMCIvPg0KIDxwYXRoIGQ9Im04IDEwaDE2djEyaC0xNnptMTUgMTF2LTEwaC0xNHYxMHptLTItOHY2aC0xMHYtNnptLTEgNXYtNGgtOHY0eiIgZmlsbD0iI2ZmZiIvPg0KPC9zdmc+DQo=",
+  "isTrigger": false,
+  "operationName": "Scope",
+  "operationDefinition": {
+    "type": "Scope",
+    "actions": {
+      "TEST": {
+        "type": "Compose",
+        "inputs": "Test",
+        "runAfter": {}
+      },
+      "Compose_2": {
+        "type": "Compose",
+        "inputs": "Test2",
+        "runAfter": {
+          "TEST": ["Succeeded"]
+        }
+      }
+    },
+    "runAfter": {}
+  }
+}
