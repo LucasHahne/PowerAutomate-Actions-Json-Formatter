@@ -241,8 +241,10 @@
         const jsonValidationParagraph =
           document.getElementById("jsonValidation");
 
+        let json;
+        
         try {
-          const json = JSON.parse(document.getElementById("jsonInput").value);
+          json = JSON.parse(document.getElementById("jsonInput").value);
         } catch (error) {
           jsonValidationParagraph.innerText = "Please insert a valid JSON";
           jsonValidationParagraph.classList.add("noJsonFormat");
