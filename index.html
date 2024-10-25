@@ -334,7 +334,7 @@
         let updatedJson = inputJson; //JSON.parse(JSON.stringify(inputJson));
 
         inputFields.forEach((inputField) => {
-          const oldName = inputField.id.split("-")[1];
+          const oldName = inputField.id.substring(8);
           const newName = inputField.value.trim();
           if (newName !== "") {
             updatedJson = JSON.parse(
