@@ -242,7 +242,7 @@
           document.getElementById("jsonValidation");
 
         let json;
-        
+
         try {
           json = JSON.parse(document.getElementById("jsonInput").value);
         } catch (error) {
@@ -348,32 +348,6 @@
         });
 
         return updatedJson;
-      }
-
-      function replaceActionNameInString(jsonString, oldName, newName) {
-        //Replacing blanks with "_" in the new name otherwise PA cannot read the actions
-        const sanitizedNewNameForAction =
-          '"' + newName.replace(/\s+/g, "_") + '":';
-        const regexNewNameForActions = new RegExp('"' + oldName + '":', "g");
-
-        //
-        const sanitizedNewNameForExpression =
-          "('" + newName.replace(/\s+/g, "_") + "')";
-        const regexNewNameForExpressions = new RegExp(
-          "('" + oldName + "')",
-          "g"
-        );
-
-        const renamedAction = jsonString.replace(
-          regexNewNameForActions,
-          sanitizedNewNameForAction
-        );
-        const renamedExpression = jsonString.replace(
-          regexNewNameForExpressions,
-          sanitizedNewNameForExpression
-        );
-
-        return renamedExpression;
       }
 
       function replaceActionNameInString(jsonString, oldName, newName) {
