@@ -303,7 +303,6 @@
         if (json.operationDefinition && json.operationDefinition.actions) {
           extractActionNames(json.operationDefinition.actions);
         }
-        showSuccessPopup("Actions updated!");
       }
 
       //-----End left panel
@@ -326,6 +325,7 @@
         // Convert the updated JSON object back to a string with proper formatting (indentation of 2 spaces)
         // Then, set the value of the output textarea to this string
         outputTextarea.value = JSON.stringify(updatedJson, null, 2);
+        showSuccessPopup("Actions updated!");
       }
 
       function updateAllActionNames(inputJson) {
