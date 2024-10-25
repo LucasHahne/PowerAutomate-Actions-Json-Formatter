@@ -303,6 +303,7 @@
         if (json.operationDefinition && json.operationDefinition.actions) {
           extractActionNames(json.operationDefinition.actions);
         }
+        showSuccessPopup("Actions updated!");
       }
 
       //-----End left panel
@@ -386,18 +387,19 @@
         const outputTextarea = document.getElementById("output");
         outputTextarea.select();
         document.execCommand("copy");
-        showSuccessPopup();
+        showSuccessPopup("JSON copied to clipboard!");
       }
 
       //-----End right panel
 
       //Utils
-      function showSuccessPopup() {
+      function showSuccessPopup(successMessage) {
         const popup = document.getElementById("successPopup");
         popup.className = "show";
+        poupup.innerHTML = successMessage;
         setTimeout(() => {
           popup.className = popup.className.replace("show", "");
-        }, 2000);
+        }, 3000);
       }
     </script>
   </body>
